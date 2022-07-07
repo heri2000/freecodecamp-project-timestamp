@@ -25,30 +25,27 @@ app.get("/api/hello", function (req, res) {
 });
 
 app.get("/api/:date", function(req, res) {
-  let Moment = require('Moment');
-  let strDateFormat = "ddd, DD MMM YYYY HH:mm:ss";
-
   let paramDate = req.params.date;
+
   if (isNaN(paramDate)) {
 
-    let dateFormat = [ Moment.ISO_8601, "YYYY-MM-DD" ];
-    if (Moment(paramDate, dateFormat, true).isValid()) {
-      let mDate = Moment(paramDate);
+    let dt = new Date(paramDate);
+    if (dt.toString() != "Invalid Date") {
       res.json({
-        unix: mDate.valueOf(),
-        utc: mDate.format(strDateFormat) + " GMT"
+        unix: Number(dt),
+        utc: dt.toUTCString()
       });
     } else {
-      res.json({ error : "Invalid Date" });
+      res.json({ error: dt.toString() });
     }
     
   } else {
 
     let unixTimestamp = Number(paramDate);
-    let mDate = Moment(unixTimestamp);
+    let dt = new Date(unixTimestamp);
     res.json({
       unix: unixTimestamp,
-      utc: mDate.format(strDateFormat) + " GMT"
+      utc: dt.toUTCString()
     });
     
   }
