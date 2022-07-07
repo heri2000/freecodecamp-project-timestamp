@@ -24,6 +24,36 @@ app.get("/api/hello", function (req, res) {
   res.json({greeting: 'hello API'});
 });
 
+app.get("/api/:date", function(req, res) {
+  let Moment = require('Moment');
+  let strDateFormat = "ddd, DD MMM YYYY HH:mm:ss";
+
+  let paramDate = req.params.date;
+  if (isNaN(paramDate)) {
+
+    let dateFormat = [ Moment.ISO_8601, "YYYY-MM-DD" ];
+    if (Moment(paramDate, dateFormat, true).isValid()) {
+      let mDate = Moment(paramDate);
+      res.json({
+        unix: mDate.valueOf(),
+        utc: mDate.format(strDateFormat) + " GMT"
+      });
+    } else {
+      res.json({ error : "Invalid Date" });
+    }
+    
+  } else {
+
+    let unixTimestamp = Number(paramDate);
+    let mDate = Moment(unixTimestamp);
+    res.json({
+      unix: unixTimestamp,
+      utc: mDate.format(strDateFormat) + " GMT"
+    });
+    
+  }
+});
+
 
 
 // listen for requests :)
